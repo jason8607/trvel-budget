@@ -150,7 +150,7 @@ const App: React.FC = () => {
       <header className="sticky top-0 z-30 bg-white/80 backdrop-blur-md border-b border-slate-200 px-4 py-3">
         <div className="max-w-2xl mx-auto flex items-center justify-center relative">
           <h1 className="text-lg font-bold text-slate-800 flex items-center gap-2">
-            ✈️ TravelSpend AI
+            ✈️ TravelSpend
           </h1>
           {expenses.length > 0 && (
             <button
