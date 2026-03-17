@@ -23,11 +23,4 @@ export enum ViewState {
   DASHBOARD = 'DASHBOARD',
   ADD = 'ADD',
   LIST = 'LIST',
-  AI_ANALYSIS = 'AI_ANALYSIS',
-}
-
-export interface AnalysisResult {
-  summary: string;
-  advice: string[];
-  budgetStatus: 'good' | 'warning' | 'critical';
 }

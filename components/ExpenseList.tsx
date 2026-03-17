@@ -6,10 +6,10 @@ import { Trash2 } from 'lucide-react';
 interface ExpenseListProps {
   expenses: Expense[];
   onDelete: (id: string) => void;
+  toTWD: (amount: number, currency: string) => number;
 }
 
-const ExpenseList: React.FC<ExpenseListProps> = ({ expenses, onDelete }) => {
-  // Sort by date descending
+const ExpenseList: React.FC<ExpenseListProps> = ({ expenses, onDelete, toTWD }) => {
   const sortedExpenses = [...expenses].sort((a, b) => b.timestamp - a.timestamp);
 
   if (sortedExpenses.length === 0) {
@@ -33,7 +33,7 @@ const ExpenseList: React.FC<ExpenseListProps> = ({ expenses, onDelete }) => {
             <div className="flex items-center gap-4 z-10">
               <div 
                 className="w-12 h-12 rounded-full flex items-center justify-center text-xl shrink-0"
-                style={{ backgroundColor: `${category.color}20` }} // 20% opacity background
+                style={{ backgroundColor: `${category.color}20` }}
               >
                 {category.icon}
               </div>
@@ -46,8 +46,13 @@ const ExpenseList: React.FC<ExpenseListProps> = ({ expenses, onDelete }) => {
             <div className="flex items-center gap-4 z-10">
               <div className="text-right">
                 <span className="block font-bold text-slate-800">
-                   {expense.currency} {expense.amount.toLocaleString()}
+                  {expense.currency} {expense.amount.toLocaleString()}
                 </span>
+                {expense.currency !== 'TWD' && (
+                  <span className="block text-xs text-slate-400">
+                    ≈ NT$ {toTWD(expense.amount, expense.currency).toLocaleString()}
+                  </span>
+                )}
               </div>
               
               <button 

@@ -3,16 +3,19 @@ import { PieChart, Pie, Cell, ResponsiveContainer, LineChart, Line, XAxis, YAxis
 import { Expense, CategoryData, DailyData } from '../types';
 import { CATEGORIES } from '../constants';
 
+type ToTWD = (amount: number, currency: string) => number;
+
 interface ChartsProps {
   expenses: Expense[];
+  toTWD: ToTWD;
 }
 
-export const ExpensePieChart: React.FC<ChartsProps> = ({ expenses }) => {
+export const ExpensePieChart: React.FC<ChartsProps> = ({ expenses, toTWD }) => {
   const data: CategoryData[] = React.useMemo(() => {
     const map = new Map<string, number>();
     expenses.forEach(e => {
       const current = map.get(e.category) || 0;
-      map.set(e.category, current + e.amount);
+      map.set(e.category, current + toTWD(e.amount, e.currency));
     });
 
     return Array.from(map.entries()).map(([key, value]) => {
@@ -23,7 +26,7 @@ export const ExpensePieChart: React.FC<ChartsProps> = ({ expenses }) => {
         color: cat ? cat.color : '#cccccc',
       };
     }).filter(item => item.value > 0);
-  }, [expenses]);
+  }, [expenses, toTWD]);
 
   if (data.length === 0) {
     return <div className="h-full w-full flex items-center justify-center text-slate-400 text-sm bg-slate-50 rounded-xl border border-dashed border-slate-200">無資料</div>;
@@ -48,7 +51,7 @@ export const ExpensePieChart: React.FC<ChartsProps> = ({ expenses }) => {
             ))}
           </Pie>
           <Tooltip 
-            formatter={(value: number) => value.toLocaleString()}
+            formatter={(value: number) => [`NT$ ${value.toLocaleString()}`, '']}
             contentStyle={{ 
               backgroundColor: '#fff', 
               borderRadius: '12px', 
@@ -71,23 +74,22 @@ export const ExpensePieChart: React.FC<ChartsProps> = ({ expenses }) => {
   );
 };
 
-export const ExpenseLineChart: React.FC<ChartsProps> = ({ expenses }) => {
+export const ExpenseLineChart: React.FC<ChartsProps> = ({ expenses, toTWD }) => {
   const data: DailyData[] = React.useMemo(() => {
     const map = new Map<string, number>();
     
-    // Sort expenses by date first
     const sorted = [...expenses].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
     sorted.forEach(e => {
       const current = map.get(e.date) || 0;
-      map.set(e.date, current + e.amount);
+      map.set(e.date, current + toTWD(e.amount, e.currency));
     });
 
     return Array.from(map.entries()).map(([date, amount]) => ({
       date: new Date(date).toLocaleDateString('zh-TW', { month: 'numeric', day: 'numeric' }),
       amount,
     }));
-  }, [expenses]);
+  }, [expenses, toTWD]);
 
   if (data.length === 0) {
     return <div className="h-full w-full flex items-center justify-center text-slate-400 text-sm bg-slate-50 rounded-xl border border-dashed border-slate-200">無歷史紀錄</div>;
@@ -121,7 +123,7 @@ export const ExpenseLineChart: React.FC<ChartsProps> = ({ expenses }) => {
               fontSize: '12px'
             }}
             cursor={{ stroke: '#e2e8f0', strokeWidth: 2 }}
-            formatter={(value: number) => [value.toLocaleString(), '花費']}
+            formatter={(value: number) => [`NT$ ${value.toLocaleString()}`, '花費']}
           />
           <Line 
             type="monotone" 
