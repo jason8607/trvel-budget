@@ -1,4 +1,4 @@
-# TravelSpend
+# Travel Budget
 
 旅遊記帳工具，支援多幣別記帳與即時匯率換算。
 

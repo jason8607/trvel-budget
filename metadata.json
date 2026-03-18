@@ -1,5 +1,5 @@
 {
-  "name": "TravelSpend",
+  "name": "Travel Budget",
   "description": "A smart travel expense tracker with multi-currency support, real-time exchange rates, and data visualization.",
   "requestFramePermissions": []
 }
